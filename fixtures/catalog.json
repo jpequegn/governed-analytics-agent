@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "orders",
+      "table": "orders",
+      "owner": "analytics",
+      "columns": {
+        "id": "number",
+        "city": "text",
+        "country": "text",
+        "status": "text",
+        "amount": "number",
+        "units": "number"
+      },
+      "lineage": [
+        "fixtures/orders.csv",
+        "scripts/generate_fixtures.py"
+      ],
+      "freshnessHours": 24
+    }
+  ],
+  "metrics": [
+    {
+      "version": 1,
+      "owner": "analytics",
+      "grain": "One order",
+      "source": "orders",
+      "status": "approved",
+      "roles": [
+        "analyst"
+      ],
+      "dimensions": [
+        "city",
+        "country"
+      ],
+      "requiredFilters": [
+        {
+          "column": "status",
+          "value": "paid"
+        }
+      ],
+      "joins": "forbidden",
+      "id": "revenue",
+      "aliases": [
+        "revenue",
+        "sales"
+      ],
+      "definition": "Total paid order amount in synthetic USD.",
+      "operation": {
+        "kind": "sum",
+        "column": "amount"
+      },
+      "unit": "USD"
+    },
+    {
+      "version": 1,
+      "owner": "analytics",
+      "grain": "One order",
+      "source": "orders",
+      "status": "approved",
+      "roles": [
+        "analyst"
+      ],
+      "dimensions": [
+        "city",
+        "country"
+      ],
+      "requiredFilters": [
+        {
+          "column": "status",
+          "value": "paid"
+        }
+      ],
+      "joins": "forbidden",
+      "id": "order_count",
+      "aliases": [
+        "order count",
+        "orders"
+      ],
+      "definition": "Count paid orders, including zero-unit orders.",
+      "operation": {
+        "kind": "count"
+      },
+      "unit": "orders"
+    },
+    {
+      "version": 1,
+      "owner": "analytics",
+      "grain": "One order",
+      "source": "orders",
+      "status": "approved",
+      "roles": [
+        "analyst"
+      ],
+      "dimensions": [
+        "city",
+        "country"
+      ],
+      "requiredFilters": [
+        {
+          "column": "status",
+          "value": "paid"
+        }
+      ],
+      "joins": "forbidden",
+      "id": "unit_price",
+      "aliases": [
+        "average unit price",
+        "unit price"
+      ],
+      "definition": "Total paid amount divided by total paid units; null when total units is zero.",
+      "operation": {
+        "kind": "ratio",
+        "numerator": "amount",
+        "denominator": "units"
+      },
+      "unit": "USD/unit"
+    }
+  ]
+}
+
