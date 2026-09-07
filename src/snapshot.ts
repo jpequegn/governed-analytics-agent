@@ -74,6 +74,13 @@ export class Snapshot {
         allow_unsigned_extensions: 'false', autoload_known_extensions: 'false',
         autoinstall_known_extensions: 'false', threads: '1', memory_limit: '128MB',
       });
+      try {
+        const connection = await db.connect();
+        try {
+          const current = (await connection.runAndReadAll('SELECT version() AS version')).getRowObjects()[0].version;
+          if (current !== manifest.engine) throw new GateError('engine_changed', 'Snapshot engine version differs from this runtime');
+        } finally { connection.closeSync(); }
+      } catch (error) { db.closeSync(); throw error; }
       return new Snapshot(manifest, db, pinned);
     } catch (error) { await rm(pinned, { recursive: true, force: true }); throw error; }
   }
@@ -83,14 +90,15 @@ export class Snapshot {
     const timer = setTimeout(() => con.interrupt(), 2000);
     try {
       const reader = await con.runAndReadAll(plan.sql, plan.params);
+      for (const row of reader.getRowObjectsJS()) {
+        if (row.value !== null && (typeof row.value !== 'number' || !Number.isFinite(row.value))) {
+          throw new GateError('invalid_result', 'Nonfinite metric result');
+        }
+      }
       const rows = reader.getRowObjectsJson();
       if (rows.length > 100) throw new GateError('row_limit', 'More than 100 groups; narrow the question');
-      for (const row of rows) {
-        if (typeof row.value === 'number' && !Number.isFinite(row.value)) throw new GateError('invalid_result', 'Nonfinite metric result');
-      }
       return rows;
     } finally { clearTimeout(timer); con.closeSync(); }
   }
   async close() { this.db.closeSync(); await rm(this.directory, { recursive: true, force: true }); }
 }
-

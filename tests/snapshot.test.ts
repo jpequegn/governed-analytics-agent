@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'vitest';
-import { mkdtemp, rm, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DuckDBInstance } from '@duckdb/node-api';
@@ -51,4 +51,3 @@ test('zero denominator is null and pinned copy survives original mutation', asyn
     expect(await snapshot.execute(c, compile(c, { metric: 'unit_price', filters: [] }))).toEqual([{ value: null, source_rows: 1 }]);
   } finally { await snapshot.close(); }
 });
-

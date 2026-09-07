@@ -67,6 +67,6 @@ export function createServer(gateway: Gateway, reviews: Reviews, authInput: unkn
     loadCatalog({ ...catalog, metrics: [...catalog.metrics.filter(m => m.id !== proposal.id), proposal] });
     return reviews.add({ requester: req.principal!.id, owner: source.owner, reason: 'metric_proposal', proposal });
   });
-  app.addHook('onClose', async () => { await reviews.close(); await gateway.close(); });
+  app.addHook('onClose', async () => { try { await reviews.close(); } finally { await gateway.close(); } });
   return app;
 }

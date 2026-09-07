@@ -1,0 +1,165 @@
+[
+  {
+    "id": "total_revenue",
+    "question": "revenue",
+    "expectedRows": [
+      {
+        "value": 720,
+        "source_rows": 5
+      }
+    ]
+  },
+  {
+    "id": "order_count",
+    "question": "order count",
+    "expectedRows": [
+      {
+        "value": 5,
+        "source_rows": 5
+      }
+    ]
+  },
+  {
+    "id": "weighted_unit_price",
+    "question": "average unit price",
+    "expectedRows": [
+      {
+        "value": 102.85714285714286,
+        "source_rows": 5
+      }
+    ]
+  },
+  {
+    "id": "nyc_filter",
+    "question": "revenue where city = \"NYC\"",
+    "expectedRows": [
+      {
+        "value": 400,
+        "source_rows": 2
+      }
+    ]
+  },
+  {
+    "id": "uk_filter",
+    "question": "order count where country = \"UK\"",
+    "expectedRows": [
+      {
+        "value": 2,
+        "source_rows": 2
+      }
+    ]
+  },
+  {
+    "id": "group_filter",
+    "question": "revenue by city where country = \"US\"",
+    "expectedRows": [
+      {
+        "dimension": "Boston",
+        "value": 200,
+        "source_rows": 1
+      },
+      {
+        "dimension": "NYC",
+        "value": 400,
+        "source_rows": 2
+      }
+    ]
+  },
+  {
+    "id": "empty",
+    "question": "revenue where city = \"Atlantis\"",
+    "expectedRows": [
+      {
+        "value": null,
+        "source_rows": 0
+      }
+    ]
+  },
+  {
+    "id": "injection_as_value",
+    "question": "revenue where city = \"' OR 1=1 --\"",
+    "expectedRows": [
+      {
+        "value": null,
+        "source_rows": 0
+      }
+    ]
+  },
+  {
+    "id": "unknown",
+    "question": "profit",
+    "code": "unknown_metric"
+  },
+  {
+    "id": "unsupported_time",
+    "question": "revenue last month",
+    "code": "unknown_metric"
+  },
+  {
+    "id": "sql_injection",
+    "question": "revenue; DROP TABLE orders",
+    "code": "unsupported"
+  },
+  {
+    "id": "ignored_suffix",
+    "question": "revenue where city = \"NYC\" OR 1=1",
+    "code": "unsupported"
+  },
+  {
+    "id": "forbidden_dimension",
+    "question": "revenue by status",
+    "code": "dimension"
+  },
+  {
+    "id": "stale",
+    "question": "revenue",
+    "scenario": "stale",
+    "code": "stale"
+  },
+  {
+    "id": "future",
+    "question": "revenue",
+    "scenario": "future",
+    "code": "invalid_time"
+  },
+  {
+    "id": "missing_freshness",
+    "question": "revenue",
+    "scenario": "missing",
+    "code": "missing_freshness"
+  },
+  {
+    "id": "ambiguous",
+    "question": "revenue",
+    "scenario": "ambiguous",
+    "code": "ambiguous"
+  },
+  {
+    "id": "unapproved",
+    "question": "revenue",
+    "scenario": "draft",
+    "code": "unapproved"
+  },
+  {
+    "id": "guest",
+    "question": "revenue",
+    "scenario": "guest",
+    "code": "permission"
+  },
+  {
+    "id": "private_dimension",
+    "question": "revenue by city",
+    "scenario": "no_city",
+    "code": "permission"
+  },
+  {
+    "id": "wrong_denominator_request",
+    "question": "average of order unit prices",
+    "code": "unknown_metric"
+  },
+  {
+    "id": "join_request",
+    "question": "revenue by employee department",
+    "code": "unknown_metric"
+  }
+]
