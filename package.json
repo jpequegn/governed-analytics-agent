@@ -1,0 +1,32 @@
+{
+  "name": "governed-analytics-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "test": "vitest run",
+    "fixtures": "python3 scripts/generate_fixtures.py",
+    "demo": "tsx src/cli.ts demo",
+    "start": "tsx src/cli.ts serve",
+    "evaluate": "tsx scripts/evaluate.ts"
+  },
+  "dependencies": {
+    "@duckdb/node-api": "1.5.5-r.4",
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/sdk-trace-node": "2.11.0",
+    "fastify": "5.12.3",
+    "node-sql-parser": "5.4.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "26.5.0",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2",
+    "vitest": "5.0.0"
+  }
+}
