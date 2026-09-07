@@ -7,6 +7,7 @@ import { buildSnapshot, Snapshot } from './snapshot.js';
 import { Gateway } from './gateway.js';
 import { Reviews } from './reviews.js';
 import { AuthSchema, createServer } from './server.js';
+import { replay } from './replay.js';
 const codeRoot = fileURLToPath(new URL('../', import.meta.url));
 const root = basename(codeRoot) === 'dist' ? dirname(codeRoot) : codeRoot;
 const user = { id: 'alice', roles: ['analyst'], dimensions: ['city', 'country'] };
@@ -15,6 +16,12 @@ async function catalog(path?: string) {
 }
 export async function main(args: string[]) {
   const [command, directory, extra] = args;
+  if (command === 'verify' && directory && extra) {
+    const snapshot = await Snapshot.open(resolve(extra));
+    try { console.log(JSON.stringify(await replay(JSON.parse(await readFile(directory, 'utf8')), snapshot))); }
+    finally { await snapshot.close(); }
+    return;
+  }
   if (command === 'init' || command === 'demo') {
     const out = resolve(directory ?? join('data', command + '-' + Date.now()));
     await mkdir(dirname(out), { recursive: true, mode: 0o700 });
@@ -60,7 +67,7 @@ export async function main(args: string[]) {
     }
     return;
   }
-  console.log('Usage: tsx src/cli.ts init [new-output-dir] | demo [new-output-dir] | serve <snapshot-dir> [review-file]');
+  console.log('Usage: tsx src/cli.ts init [new-output-dir] | demo [new-output-dir] | serve <snapshot-dir> [review-file] | verify <receipt.json> <snapshot-dir>');
   if (command && command !== '--help') process.exitCode = 2;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
